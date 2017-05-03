@@ -13,6 +13,9 @@ SDIR=src
 # directory to store object files
 ODIR=obj
 
+# create directory to store compiled object files
+dir_guard=@mkdir -p $(@D)
+
 # generate paths of included files
 _DEPS = help.h util.h task1.h task2a.h task2b.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
@@ -23,10 +26,12 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 # compile dependencies
 $(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
+	$(dir_guard)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 # compile main files with dependencies
 $(MAIN_PROGRAM): $(OBJ)
+	$(dir_guard)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
