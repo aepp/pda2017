@@ -76,5 +76,5 @@ void task1(int* argc, char** argv[]) {
         MPI_Send(&proc_name, namelen+1, MPI_CHAR, 0, TAG_PROC_NAME, MPI_COMM_WORLD);
     }
     // finalizing MPI interface 
-    MPI_Finalize();                    
+    MPI_Finalize();
 }
