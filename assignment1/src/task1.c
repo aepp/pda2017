@@ -67,7 +67,7 @@ void task1(int* argc, char** argv[]) {
             // receive the process name
             MPI_Recv(&theirProcName, MPI_MAX_PROCESSOR_NAME+1, MPI_CHAR, MPI_ANY_SOURCE, TAG_PROC_NAME, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             // print the received message to console
-            printf("Message received from %s: %d!\n", theirProcName, theirRank);
+            printf("Message received from %s:\t %d!\n", theirProcName, theirRank);
         }
     } else { // if I'm process with rank > 0, send message to process with rank 0
         // send my rank
