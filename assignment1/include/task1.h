@@ -4,6 +4,14 @@
 
 /* Prototypes for the functions */
 
-void task1();
+/**
+ * Task 1 of Assignment 1
+ *
+ * Parameters:
+ *
+ * argc         number of cli arguments
+ * argv         cli arguments
+ */
+void task1(int* argc, char** argv[]);
 
 #endif

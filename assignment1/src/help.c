@@ -22,6 +22,6 @@ void showHelp(int assignmentNumber)
     printf("#                       available tasks are 1, 2a and 2b                #\n");
     printf("# -h                    view this help                                  #\n");
     printf("# -m [array size]       number of elements in random array              #\n");
-    printf("#                       (default 100)                                   #\n");
+    printf("#                       (if not set use default 100)                    #\n");
     printf("#########################################################################\n");
 }

@@ -1,14 +1,14 @@
 /************************************************************************/
 /* Author: Aleksandr Epp <aleksandr.epp@gmail.com>                      */
-/* matriclenumber: 6002853                                              */
+/* Matriclenumber: 6002853                                              */
 /* Assignment : 1                                                       */
 /* Task : 1                                                             */
 /*                                                                      */
 /* Description:                                                         */
 /*                                                                      */
 /* For each CPU, where the program is running, the rank and the host    */
-/* name are sent to the process with rank 0. Process with rank 0 then   */
-/* prints received messages.                                            */
+/* name are sent to the process with rank 0. Process with rank 0        */
+/* then prints received messages.                                       */
 /*                                                                      */
 /************************************************************************/ 
 
@@ -20,7 +20,7 @@
 
 #include "task1.h"      // include own header file
 
-void task1(int* argc, char** argv[ ]) {
+void task1(int* argc, char** argv[]) {
     // length of name
     int namelen;
     // rank of the process
@@ -59,18 +59,15 @@ void task1(int* argc, char** argv[ ]) {
     // separate the first part of hostname
     if ( (c=strchr(proc_name,'.'))  !=  NULL) *c = '\0';     
     
-    //printf("%03d: process running on %s!\n", my_rank, proc_name );
-                                    // print rank and hostname to display
-    
     if(my_rank == 0){ // if I'm process with rank 0
-        // recieve messages from all other processes
+        // receive messages from all other processes
         for(i = 0; i < numProc - 1; i++){
-            // recieve the process rank
+            // receive the process rank
             MPI_Recv(&theirRank, 1, MPI_INT, MPI_ANY_SOURCE, TAG_PROC_NUMB, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            // recieve the process name
+            // receive the process name
             MPI_Recv(&theirProcName, MPI_MAX_PROCESSOR_NAME+1, MPI_CHAR, MPI_ANY_SOURCE, TAG_PROC_NAME, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            // print the recieved message to console
-            printf("Msg recieved from %s: %d!\n", theirProcName, theirRank);
+            // print the received message to console
+            printf("Message received from %s: %d!\n", theirProcName, theirRank);
         }
     } else { // if I'm process with rank > 0, send message to process with rank 0
         // send my rank

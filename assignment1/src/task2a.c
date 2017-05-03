@@ -1,22 +1,28 @@
 /************************************************************************/
 /* Author: Aleksandr Epp <aleksandr.epp@gmail.com>                      */
-/* matriclenumber: 6002853                                              */
+/* Matriclenumber: 6002853                                              */
 /* Assignment : 1                                                       */
-/* Task : 2    a)                                                       */
+/* Task : 2 a)                                                          */
 /*                                                                      */
 /* Description:                                                         */
 /*                                                                      */
+/* Each process generates a set of random integers, determines min, max */
+/* and sum of the set and send this information to next process with    */
+/* the rank + 1. Next process calculates new min, max and sum values    */
+/* based on the results received from previous process and own values   */
+/* and forward the results to next process. Last process sends the      */
+/* results to first process and it prints the overall results.          */
 /*                                                                      */
 /************************************************************************/
 
-#include "mpi.h"         // import of the MPI definitions
-#include <stdio.h>         // import of the definitions of the C IO library
-#include <string.h>     // import of the definitions of the string operations
-#include <unistd.h>        // standard unix io library definitions and declarations
-#include <errno.h>        // system error numbers
+#include "mpi.h"      // import of the MPI definitions
+#include <stdio.h>    // import of the definitions of the C IO library
+#include <string.h>   // import of the definitions of the string operations
+#include <unistd.h>   // standard unix io library definitions and declarations
+#include <errno.h>    // system error numbers
 
-#include "task2a.h"        // include own header file
-#include "util.h"         // include assignment utils
+#include "task2a.h"   // include own header file
+#include "util.h"     // include assignment utils
 
 //#define MPI_WTIME_IS_GLOBAL 1
 
@@ -32,7 +38,7 @@ void task2a(int argc, char* argv[ ], int maxRandom, int arraySize)
     int TAG_MAX = 2;    // tag for messages with max
     int TAG_SUM = 3;    // tag for messages with sum
     
-    // number of proccesses envolved
+    // number of processes
     int numProc; 
     // iterator variable
     int i;
@@ -42,7 +48,9 @@ void task2a(int argc, char* argv[ ], int maxRandom, int arraySize)
     // initializing of MPI-Interface
     MPI_Init(&argc, &argv);
 
-    MPI_Request request; //capture request of a MPI_Send
+    // start time measurement when all initialization is done and calculation begins
+    timeStart = MPI_Wtime();
+
     MPI_Status status; //capture status of a MPI_Send
     
     //get your rank
@@ -51,18 +59,15 @@ void task2a(int argc, char* argv[ ], int maxRandom, int arraySize)
     // get the number of processes running
     MPI_Comm_size(MPI_COMM_WORLD, &numProc);
 
-    // start time measurement when all initialization is done and calculation begins
-    timeStart = MPI_Wtime();
-
     // array to operate on
     int randomInts[arraySize];
     // min, max and sum of the array calculated by current process
     int myMin, myMax, mySum;
     // min, max and sum of the array recieved form another process
-    int rMin = 42, rMax, rSum;
+    int rMin, rMax, rSum;
     
     // fill with random integers
-    fillWithRandomInt(randomInts, arraySize, maxRandom);
+    fillWithRandomInt(randomInts, arraySize, maxRandom, myRank);
     
     // print initialized array
 //    for(i = 0; i < arraySize; i++) {

@@ -5,7 +5,7 @@
 /* Prototypes for the functions */
 
 /**
- * task 2 b) of assignment 1
+ * Task 2 b) of Assignment 1
  *
  * Parameters:
  *
