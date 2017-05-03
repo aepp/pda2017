@@ -13,15 +13,16 @@ void showHelp(int assignmentNumber)
     printf("#  -> mpiexec ./assignment [arguments]                                  #\n");
     printf("#                                                                       #\n");
     printf("# You can specify the amount of hosts by using -np argument:            #\n");
-    printf("#  -> mpiexec -np 4 ./assignment [parameter]                            #\n");
+    printf("#  -> mpiexec -np 4 ./assignment [arguments]                            #\n");
     printf("#                                                                       #\n");
     printf("#########################################################################\n");
     printf("# Arguments:                                                            #\n");
     printf("#                                                                       #\n");
-    printf("# -t (task number)      run task (task number) from Assignment %d        #\n", assignmentNumber);
-    printf("#                       available tasks are 1, 2a and 2b                #\n");
+    printf("# -t [task number]      run task [task number] from Assignment %d        #\n", assignmentNumber);
+    printf("#                       valid task numbers are 1, 2a and 2b             #\n");
     printf("# -h                    view this help                                  #\n");
     printf("# -m [array size]       number of elements in random array              #\n");
-    printf("#                       (if not set use default 100)                    #\n");
+    printf("#                       if not set the default value is 100             #\n");
+    printf("#                       this argument is only useful for task 2a and 2b #\n");
     printf("#########################################################################\n");
 }
