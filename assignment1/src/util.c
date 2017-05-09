@@ -47,7 +47,7 @@ int getSum(int* array, int size)
 {
     int i, sum = 0;
 
-     for (i = 0; i < size; i++) {
+    for (i = 0; i < size; i++) {
         sum += array[i];
     }
     return sum;

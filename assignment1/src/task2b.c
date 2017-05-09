@@ -78,6 +78,12 @@ void task2b(int argc, char* argv[ ], int maxRandom, int arraySize)
     myMax = getMax(randomInts, arraySize);
     mySum = getSum(randomInts, arraySize);
 
+//    for (i = 0; i < arraySize; i++) {
+//        printf("Me %d: array[%d]=%d\n", myRank, i, randomInts[i]);
+//    }
+
+//    printf("Me %d: myMax=%d\n", myRank, myMax);
+
     for(i = 0; i < levelCount; i++) {
         // determine level for each process
         // level of process 0 will stay 0
@@ -89,16 +95,16 @@ void task2b(int argc, char* argv[ ], int maxRandom, int arraySize)
 //    printf("Me %d! My level is %d\n", myRank, myLevel);
 
     if(myRank >= numProc / 2) { // all processes with rank > 0 send
-        printf("Me %d! Send to %d\n", myRank, myRank - (int)powl(2, myLevel - 1));
+//        printf("Me %d! Send to %d\n", myRank, myRank - (int)powl(2, myLevel - 1));
         MPI_Send(&myMin, 1, MPI_INT, myRank - (int)powl(2, myLevel - 1), TAG_MIN, MPI_COMM_WORLD);
         MPI_Send(&myMax, 1, MPI_INT, myRank - (int)powl(2, myLevel - 1), TAG_MAX, MPI_COMM_WORLD);
         MPI_Send(&mySum, 1, MPI_INT, myRank - (int)powl(2, myLevel - 1), TAG_SUM, MPI_COMM_WORLD);
     } else if(myRank < numProc / 2 && myRank != 0) { // processes with rank < numProc / 2 receive and send
         for(i = myLevel; i < levelCount; i++) {
-            printf("Me %d! Receive from %d\n", myRank, myRank + (int)powl(2, i));
-            MPI_Recv(&rMin, 1, MPI_INT, myRank + (int)powl(2, i), TAG_MIN, MPI_COMM_WORLD, &status);
-            MPI_Recv(&rMax, 1, MPI_INT, myRank + (int)powl(2, i), TAG_MAX, MPI_COMM_WORLD, &status);
-            MPI_Recv(&rSum, 1, MPI_INT, myRank + (int)powl(2, i), TAG_SUM, MPI_COMM_WORLD, &status);
+//            printf("Me %d! Receive from %d\n", myRank, myRank + (int)powl(2, i));
+            MPI_Recv(&rMin, 1, MPI_INT, myRank + (int)powl(2, i), TAG_MIN, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&rMax, 1, MPI_INT, myRank + (int)powl(2, i), TAG_MAX, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&rSum, 1, MPI_INT, myRank + (int)powl(2, i), TAG_SUM, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
             if(rMin < myMin) {
                 myMin = rMin;
@@ -109,15 +115,17 @@ void task2b(int argc, char* argv[ ], int maxRandom, int arraySize)
             mySum += rSum;
         }
 
+//        printf("Me %d! Send to %d\n", myRank, myRank - (int)powl(2, myLevel - 1));
         MPI_Send(&myMin, 1, MPI_INT, myRank - (int)powl(2, myLevel - 1), TAG_MIN, MPI_COMM_WORLD);
         MPI_Send(&myMax, 1, MPI_INT, myRank - (int)powl(2, myLevel - 1), TAG_MAX, MPI_COMM_WORLD);
         MPI_Send(&mySum, 1, MPI_INT, myRank - (int)powl(2, myLevel - 1), TAG_SUM, MPI_COMM_WORLD);
     } else {
          for(i = myLevel; i < levelCount; i++) {
-            printf("Me %d! Receive from %d\n", myRank, myRank + (int)powl(2, i));
-            MPI_Recv(&rMin, 1, MPI_INT, myRank + (int)powl(2, i), TAG_MIN, MPI_COMM_WORLD, &status);
-            MPI_Recv(&rMax, 1, MPI_INT, myRank + (int)powl(2, i), TAG_MAX, MPI_COMM_WORLD, &status);
-            MPI_Recv(&rSum, 1, MPI_INT, myRank + (int)powl(2, i), TAG_SUM, MPI_COMM_WORLD, &status);
+//            printf("Me %d! Receive from %d\n", myRank, myRank + (int)powl(2, i));
+            MPI_Recv(&rMin, 1, MPI_INT, myRank + (int)powl(2, i), TAG_MIN, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&rMax, 1, MPI_INT, myRank + (int)powl(2, i), TAG_MAX, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&rSum, 1, MPI_INT, myRank + (int)powl(2, i), TAG_SUM, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+//            printf("Me %d! Received max=%d from %d\n", myRank, rMax, myRank + (int)powl(2, i));
 
             if(rMin < myMin) {
                 myMin = rMin;
@@ -133,9 +141,9 @@ void task2b(int argc, char* argv[ ], int maxRandom, int arraySize)
 
         // and print the overall result
         printf("Overall results:\n\n");
-        printf("Min: %d\n", rMin);
-        printf("Max: %d\n", rMax);
-        printf("Sum: %d\n", rSum);
+        printf("Min: %d\n", myMin);
+        printf("Max: %d\n", myMax);
+        printf("Sum: %d\n", mySum);
         printf("\nOverall execution time: %f\n", timeStop - timeStart);
     }
 
