@@ -61,11 +61,11 @@ void task1(int* argc, char** argv[]) {
     
     if(my_rank == 0){ // if I'm process with rank 0
         // receive messages from all other processes
-        for(i = 0; i < numProc - 1; i++){
+        for(i = 1; i < numProc; i++){
             // receive the process rank
-            MPI_Recv(&theirRank, 1, MPI_INT, MPI_ANY_SOURCE, TAG_PROC_NUMB, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&theirRank, 1, MPI_INT, i, TAG_PROC_NUMB, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             // receive the process name
-            MPI_Recv(&theirProcName, MPI_MAX_PROCESSOR_NAME+1, MPI_CHAR, MPI_ANY_SOURCE, TAG_PROC_NAME, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&theirProcName, MPI_MAX_PROCESSOR_NAME+1, MPI_CHAR, i, TAG_PROC_NAME, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             // print the received message to console
             printf("Message received from %s:\t %d!\n", theirProcName, theirRank);
         }
