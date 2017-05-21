@@ -1,0 +1,88 @@
+/************************************************************************/
+/* Program: assignment.c                                                */
+/* Author: Aleksandr Epp <aleksandr.epp@gmail.com>                      */
+/* Matriclenumber: 6002853                                              */
+/* Assignment : 1                                                       */
+/* Parameters: -h, -t, -m                                               */
+/* Environment variables: no                                            */
+/*                                                                      */
+/* Description:                                                         */
+/*                                                                      */
+/* This is the main program of Assignment 1. From here individual tasks */
+/* can be started. Or view the help.                                    */
+/*                                                                      */
+/************************************************************************/ 
+
+#include <stdio.h>      // import of the definitions of the C IO library
+#include <stdlib.h>     // to use exit() function
+#include <string.h>     // import of the definitions of the string operations
+#include <unistd.h>     // standard unix io library definitions and declarations
+#include <errno.h>      // system error numbers
+#include <inttypes.h>   // for strtoumax() string to int conversion
+
+#include "help.h"       // to show help with -h parameter
+#include "task1.h"      // to run Task 1
+#include "task2.h"      // to run Task 2
+
+// constants
+#define DEFAULT_NUMBER_OF_INTERVALS 100 // default number of elements in random int array
+#define MAX_RANDOM 100 // maximum random integer that appears in the array
+#define ASSIGNMENT_NR 2
+
+int main(int argc, char* argv[])
+{ 
+    int opt = 0; // command line parameter name
+
+    double a = 0, b = 0, // integration limits
+           numberOfIntervals = DEFAULT_NUMBER_OF_INTERVALS, // number of elements in random int array
+           func = 1; // default function to integrate
+
+    char *taskName = NULL; // task nr. given by cli parameter
+
+    // iterate through all cli parameters
+    while ((opt = getopt(argc, argv, "hn:t:a:b:f:")) != -1) {
+        switch(opt) {
+            case 'h': // if -h parameter given => show help
+                printf("Show help:\n");
+                showHelp(ASSIGNMENT_NR);
+                exit(0);
+            case 'n': // if -n parameter given => set number of intervals per process
+                sscanf(optarg, "%lf", &numberOfIntervals);
+                break;
+            case 't': // if -t parameter given => save task nr. to decide which task to execute
+                taskName = optarg;
+                break;
+            case 'a': // if -a parameter given => set left integration limit
+                sscanf(optarg, "%lf", &a);
+                break;
+            case 'b': // if -b parameter given => set right integration limit
+                sscanf(optarg, "%lf", &b);
+                break;
+            case 'f': // if -f parameter given => select which function to integrate
+                sscanf(optarg, "%lf", &func);
+                break;
+            default: // if any other cli parameters provided
+                // exit program with error status
+                exit(1);
+        }
+    }
+
+    // decide which task to run based on -t parameter
+    if(taskName == NULL){ // if no parameter provided - just show help
+        showHelp(ASSIGNMENT_NR);
+        exit(0);
+    } else if(!strcmp(taskName, "1")) {
+        if(b != 0){
+            task1(argc, argv, a, b, numberOfIntervals, func);
+        } else {
+            printf("Right integration limit is mandatory parameter.\n");
+        }
+    } else if(!strcmp(taskName, "2")) {
+        task2(argc, argv);
+    } else { // if invalid task number provided
+        printf("Task %s doesn't exist. See help (-h) for available tasks.\n", taskName);
+    }
+
+    // end of program with exit code 0
+    return 0;
+}
