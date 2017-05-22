@@ -21,13 +21,17 @@ void showHelp(int assignmentNumber)
     printf("# -t [task number]      run task [task number] from Assignment %d          #\n", assignmentNumber);
     printf("#                       valid task numbers are 1 and 2                    #\n");
     printf("# -h                    view this help                                    #\n");
-    printf("# -n [# intervals]      number of intervals                               #\n");
+    printf("# -n [integer]          number of intervals for task 1                    #\n");
+    printf("#                       amount of random numbers for task 2               #\n");
     printf("#                       if not set the default value is 100               #\n");
     printf("# -a [left limit]       (task 1 only) left integration limit              #\n");
     printf("#                       if not set the default value is 0                 #\n");
     printf("# -b [right limit]      (task 1 only) right integration limit             #\n");
     printf("# -f [function number]  (task 1 only) select which function to integrate  #\n");
     printf("#                       valid functions are 1 (=sqrt) and 2 (=log)        #\n");
+    printf("#                       if not set the default value is 1                 #\n");
+    printf("# -m [mode]             (task 2 only) communication mode                  #\n");
+    printf("#                       valid modes are 1 (=task2a) and 2 (=task2b)       #\n");
     printf("#                       if not set the default value is 1                 #\n");
     printf("###########################################################################\n");
 }

@@ -34,8 +34,9 @@ int main(int argc, char* argv[])
     int opt = 0; // command line parameter name
 
     double a = 0, b = 0, // integration limits
-           numberOfIntervals = DEFAULT_NUMBER_OF_INTERVALS, // number of elements in random int array
-           func = 1; // default function to integrate
+           n = DEFAULT_NUMBER_OF_INTERVALS, // default n for both tasks
+           func = 1, // default function to integrate for task 1
+           commMode = 1; // default communication mode for task 2
 
     char *taskName = NULL; // task nr. given by cli parameter
 
@@ -46,8 +47,11 @@ int main(int argc, char* argv[])
                 printf("Show help:\n");
                 showHelp(ASSIGNMENT_NR);
                 exit(0);
-            case 'n': // if -n parameter given => set number of intervals per process
-                sscanf(optarg, "%lf", &numberOfIntervals);
+            case 'n': 
+                // if -n parameter given => 
+                //      set number of intervals per process for task 1
+                //      or set number of random integers for task 2
+                sscanf(optarg, "%lf", &n);
                 break;
             case 't': // if -t parameter given => save task nr. to decide which task to execute
                 taskName = optarg;
@@ -59,6 +63,9 @@ int main(int argc, char* argv[])
                 sscanf(optarg, "%lf", &b);
                 break;
             case 'f': // if -f parameter given => select which function to integrate
+                sscanf(optarg, "%lf", &func);
+                break;
+            case 'm': // if -f parameter given => select communication mode for task 2
                 sscanf(optarg, "%lf", &func);
                 break;
             default: // if any other cli parameters provided
@@ -73,12 +80,12 @@ int main(int argc, char* argv[])
         exit(0);
     } else if(!strcmp(taskName, "1")) {
         if(b != 0){
-            task1(argc, argv, a, b, numberOfIntervals, func);
+            task1(argc, argv, a, b, n, func);
         } else {
             printf("Right integration limit is mandatory parameter.\n");
         }
     } else if(!strcmp(taskName, "2")) {
-        task2(argc, argv);
+        task2(argc, argv, n, commMode);
     } else { // if invalid task number provided
         printf("Task %s doesn't exist. See help (-h) for available tasks.\n", taskName);
     }
