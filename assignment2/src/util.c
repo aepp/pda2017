@@ -36,7 +36,7 @@ double trapezoidalRuleF2(double a, double b, int n){
     for(k = 1; k < n; k++) {
         tempSum += f2(a + k * s);
     }
-    return ((s/n)/2) * (f2(a) + f2(b) + 2 * tempSum);
+    return (s/2) * (f2(a) + f2(b) + 2 * tempSum);
 }
 
 void fillWithRandomInt(int* array, int size, int maxRandom, int rank)
