@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
                 sscanf(optarg, "%lf", &func);
                 break;
             case 'm': // if -f parameter given => select communication mode for task 2
-                sscanf(optarg, "%lf", &func);
+                sscanf(optarg, "%lf", &commMode);
                 break;
             default: // if any other cli parameters provided
                 // exit program with error status
