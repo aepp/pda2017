@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     char *taskName = NULL; // task nr. given by cli parameter
 
     // iterate through all cli parameters
-    while ((opt = getopt(argc, argv, "hn:t:a:b:f:")) != -1) {
+    while ((opt = getopt(argc, argv, "hn:t:a:b:f:m:")) != -1) {
         switch(opt) {
             case 'h': // if -h parameter given => show help
                 printf("Show help:\n");
