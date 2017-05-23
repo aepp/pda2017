@@ -55,11 +55,16 @@ int cmpFunc (const void *a, const void *b);
 /**
  * communication in non-blocking mode, task 2a)
  */
-void nonBlockingCommunication();
+void nonBlockingCommunication(int *myRandomInts, int myRank, int numProc, int sizeOfRandArray);
 
 /**
  * persistent communication, task 2b)
  */
 void persistentCommunication();
+
+/**
+ * merge own and partners arrays, sort and keep the correct half of it
+ */
+void getMyNewArray(int *myRandomInts, int *theirRandomInts, int sizeOfRandArray, int partner, int myRank);
 
 #endif

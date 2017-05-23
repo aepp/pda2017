@@ -65,12 +65,10 @@ void nonBlockingCommunication(int *myRandomInts, int myRank, int numProc, int si
                 recvReqE;                   // even recv request handle
     MPI_Status  statusO,                    // odd communication status
                 statusE;                    // even communication status
-    int theirRandomInts[sizeOfRandArray],   // elements current process keep
-        randomIntsToSend[sizeOfRandArray],  // elements current process sends to its communication partner
+    int theirRandomInts[sizeOfRandArray],   // partners random array
         phase,                              // phase (even or odd)
-        partnerE,
-        partnerO,
-        mergedArray[2 * sizeOfRandArray];
+        partnerE,                           // communication partner for the even phase
+        partnerO;                           // communication partner for the odd phase
 
     // calculate communication partner rank for even and odd phase
     if(myRank % 2 == 0){
@@ -94,60 +92,42 @@ void nonBlockingCommunication(int *myRandomInts, int myRank, int numProc, int si
             MPI_Irecv(theirRandomInts, sizeOfRandArray, MPI_INT, partnerE, 1, MPI_COMM_WORLD, &recvReqE);
             // wait until receive finished
             MPI_Wait(&recvReqE, &statusE);
-
-            // merge own random array
-            memcpy(mergedArray, myRandomInts, sizeOfRandArray * sizeof(int));
-            // and partners random array into one
-            memcpy(mergedArray + sizeOfRandArray, theirRandomInts, sizeOfRandArray * sizeof(int));
-            // sort the merged array
-            qsort(mergedArray, 2 * sizeOfRandArray, sizeof(int), cmpFunc);
-
-            // apply the exchange rule
-            if (myRank < partnerE){ // if I'm left from my partner
-                // keep the left part of the merged sorted array (smaller values)
-                memcpy(myRandomInts, mergedArray, sizeOfRandArray * sizeof(int));
-            } else { // if I'm the right neighbour of my partner
-                // keep the right part of the merged sorted array (bigger values)
-                memcpy(myRandomInts, mergedArray + sizeOfRandArray, sizeOfRandArray * sizeof(int));
-            }
+            // merge own and received arrays, sort and decide which half to keep
+            getMyNewArray(myRandomInts, theirRandomInts, sizeOfRandArray, partnerE, myRank);
         } else if (phase % 2 != 0 && partnerO >= 0){ // odd phase
             MPI_Isend(myRandomInts, sizeOfRandArray, MPI_INT, partnerO, 1, MPI_COMM_WORLD, &sendReqO);
-
-            // wait until send finished
-            MPI_Wait(&sendReqO, &statusO);
-
             MPI_Irecv(theirRandomInts, sizeOfRandArray, MPI_INT, partnerO, 1, MPI_COMM_WORLD, &recvReqO);
-
+            // wait until send finished
             MPI_Wait(&recvReqO, &statusO);
-
-            // merge own random array
-            memcpy(mergedArray, myRandomInts, sizeOfRandArray * sizeof(int));
-            // and partners random array into one
-            memcpy(mergedArray + sizeOfRandArray, theirRandomInts, sizeOfRandArray * sizeof(int));
-            // sort the merged array
-            qsort(mergedArray, 2 * sizeOfRandArray, sizeof(int), cmpFunc);
-
-            // apply the exchange rule
-            if (myRank < partnerO){ // if I'm left from my partner
-                // keep the left part of the merged sorted array (smaller values)
-                memcpy(myRandomInts, mergedArray, sizeOfRandArray * sizeof(int));
-            } else { // if I'm the right neighbour of my partner
-                // keep the right part of the merged sorted array (bigger values)
-                memcpy(myRandomInts, mergedArray + sizeOfRandArray, sizeOfRandArray * sizeof(int));
-            }
+            // merge own and received arrays, sort and decide which half to keep
+            getMyNewArray(myRandomInts, theirRandomInts, sizeOfRandArray, partnerO, myRank);
         }
-//        if(myRank == 0){
-//            printf("%d\n", myRank);
-//        }
-//        MPI_Request_free(&sendReqO);
-//        MPI_Request_free(&sendReqE);
-//        MPI_Request_free(&recvReqO);
-//        MPI_Request_free(&recvReqE);
-//
-//        free(mergedArray);
     }
 }
 
 void persistentCommunication(int* randomInts, int myRank, int numProc, int sizeOfRandArray){
 
+//        MPI_Request_free(&sendReqO);
+//        MPI_Request_free(&sendReqE);
+//        MPI_Request_free(&recvReqO);
+//        MPI_Request_free(&recvReqE);
+}
+
+void getMyNewArray(int *myRandomInts, int *theirRandomInts, int sizeOfRandArray, int partner, int myRank){
+    int mergedArray[2 * sizeOfRandArray];
+    // merge own random array
+    memcpy(mergedArray, myRandomInts, sizeOfRandArray * sizeof(int));
+    // and partners random array into one
+    memcpy(mergedArray + sizeOfRandArray, theirRandomInts, sizeOfRandArray * sizeof(int));
+    // sort the merged array
+    qsort(mergedArray, 2 * sizeOfRandArray, sizeof(int), cmpFunc);
+
+    // apply the exchange rule
+    if (myRank < partner){ // if I'm left from my partner
+        // keep the left part of the merged sorted array (smaller values)
+        memcpy(myRandomInts, mergedArray, sizeOfRandArray * sizeof(int));
+    } else { // if I'm the right neighbour of my partner
+        // keep the right part of the merged sorted array (bigger values)
+        memcpy(myRandomInts, mergedArray + sizeOfRandArray, sizeOfRandArray * sizeof(int));
+    }
 }

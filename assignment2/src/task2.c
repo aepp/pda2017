@@ -45,18 +45,10 @@ void task2(int argc, char* argv[], double sizeOfRandArray, double commMode)
 
     // fill with random integers
     fillWithRandomInt(randomInts, (int)sizeOfRandArray, MAX_RANDOM, myRank);
-//    printf("Init: ");
-//    for(i = 0; i < (int)sizeOfRandArray; i++){
-//        printf("%d, ", randomInts[i]);
-//    }
-//    printf("\n");
+
     // sort own array of random integers
     qsort(randomInts, (int)sizeOfRandArray, sizeof(int), cmpFunc);
-//    printf("Sort: ");
-//    for(i = 0; i < (int)sizeOfRandArray; i++){
-//        printf("%d, ", randomInts[i]);
-//    }
-//    printf("\n");
+
     // decide how to communicate
     switch((int)commMode){
         case 1: // non-blocking
@@ -68,21 +60,20 @@ void task2(int argc, char* argv[], double sizeOfRandArray, double commMode)
         default: // unknown communication mode
             exit(1);
     }
-    // allocate memory for sorted result
-    finalResult = malloc(numProc * (int)sizeOfRandArray * sizeof(int));
-//    for(i = 0; i < (int)sizeOfRandArray; i++){
-//        printf("%d, ", randomInts[i]);
-//    }
-//    printf("\n");
-    /// collect results from all processes
-    MPI_Gather(&randomInts, (int)sizeOfRandArray, MPI_INT, finalResult, (int)sizeOfRandArray, MPI_INT, root, MPI_COMM_WORLD);
-//printf("%d\n", myRank);
+
+    // root process allocates memory for sorted result
     if(myRank == root){
-        // root process prints the sorted result
-        printf("Sort result:\n\n");
+        finalResult = malloc(numProc * (int)sizeOfRandArray * sizeof(int));
+    }
+    // root process  collect results from all processes
+    MPI_Gather(&randomInts, (int)sizeOfRandArray, MPI_INT, finalResult, (int)sizeOfRandArray, MPI_INT, root, MPI_COMM_WORLD);
+
+    // root process prints the sorted result
+    if(myRank == root){
+        printf("\nSorted result:\n");
         for(i = 0; i < numProc * (int)sizeOfRandArray; i++){
             printf("%d, ", finalResult[i]);
-            if ((i + 1) % 10 == 0){
+            if ((i + 1) % (int)sizeOfRandArray == 0){
                 printf("\n");
             }
         }
