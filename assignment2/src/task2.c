@@ -58,6 +58,9 @@ void task2(int argc, char* argv[], double sizeOfRandArray, double commMode)
             persistentCommunication(randomInts, myRank, numProc, (int)sizeOfRandArray);
             break;
         default: // unknown communication mode
+            if(myRank == root){
+                printf("Communication mode not valid. See help.\n");
+            }
             exit(1);
     }
 
@@ -70,7 +73,7 @@ void task2(int argc, char* argv[], double sizeOfRandArray, double commMode)
 
     // root process prints the sorted result
     if(myRank == root){
-        printf("\nSorted result:\n");
+        printf("\nSorted result using %s communication:\n", commMode == 1 ? "non-blocking" : "persistent");
         for(i = 0; i < numProc * (int)sizeOfRandArray; i++){
             printf("%d, ", finalResult[i]);
             if ((i + 1) % (int)sizeOfRandArray == 0){
