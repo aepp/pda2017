@@ -63,8 +63,8 @@ void nonBlockingCommunication(int *myRandomInts, int myRank, int numProc, int si
                 sendReqE,                   // even send request handle
                 recvReqO,                   // odd recv request handle
                 recvReqE;                   // even recv request handle
-    MPI_Status  statusO,                    // odd communication status
-                statusE;                    // even communication status
+    MPI_Status statusO,                     // odd communication status
+               statusE;                     // even communication status
     int theirRandomInts[sizeOfRandArray],   // partners random array
         phase,                              // phase (even or odd)
         partnerE,                           // communication partner for the even phase
@@ -105,7 +105,62 @@ void nonBlockingCommunication(int *myRandomInts, int myRank, int numProc, int si
     }
 }
 
-void persistentCommunication(int* randomInts, int myRank, int numProc, int sizeOfRandArray){
+void persistentCommunication(int* myRandomInts, int myRank, int numProc, int sizeOfRandArray){
+    MPI_Request sendReqO,                   // odd send request handle
+                sendReqE,                   // even send request handle
+                recvReqO,                   // odd recv request handle
+                recvReqE;                   // even recv request handle
+    MPI_Status statusO,                     // odd communication status
+               statusE;                     // even communication status
+    int theirRandomInts[sizeOfRandArray],   // partners random array
+        phase,                              // phase (even or odd)
+        partnerE,                           // communication partner for the even phase
+        partnerO;                           // communication partner for the odd phase
+
+    // calculate communication partner rank for even and odd phase
+    if(myRank % 2 == 0){
+        partnerE = myRank + 1;
+        partnerO = myRank - 1;
+        if(partnerE >= numProc){
+            partnerE = -1;
+        }
+    } else {
+        partnerE = myRank - 1;
+        partnerO = myRank + 1;
+        if(partnerO >= numProc){
+            partnerO = -1;
+        }
+    }
+
+    // initialize persistent communication
+    MPI_Send_init(myRandomInts, sizeOfRandArray, MPI_INT, partnerE, 1, MPI_COMM_WORLD, &sendReqE);
+    MPI_Recv_init(theirRandomInts, sizeOfRandArray, MPI_INT, partnerE, 1, MPI_COMM_WORLD, &recvReqE);
+    MPI_Send_init(myRandomInts, sizeOfRandArray, MPI_INT, partnerO, 1, MPI_COMM_WORLD, &sendReqO);
+    MPI_Recv_init(theirRandomInts, sizeOfRandArray, MPI_INT, partnerO, 1, MPI_COMM_WORLD, &recvReqO);
+
+    // odd-even transportation sort
+    for (phase = 0; phase < numProc; phase++){
+        if (phase % 2 == 0 && partnerE >= 0){ // even phase
+            // start communication
+            MPI_Start(&sendReqE);
+            MPI_Start(&recvReqE);
+            // wait until requests are finished
+            MPI_Wait(&sendReqE, &statusE);
+            MPI_Wait(&recvReqE, &statusE);
+
+            // merge own and received arrays, sort and decide which half to keep
+            getMyNewArray(myRandomInts, theirRandomInts, sizeOfRandArray, partnerE, myRank);
+        } else if (phase % 2 != 0 && partnerO >= 0){ // odd phase
+            // start communication
+            MPI_Start(&sendReqO);
+            MPI_Start(&recvReqO);
+            // wait until requests are finished
+            MPI_Wait(&sendReqO, &statusO);
+            MPI_Wait(&recvReqO, &statusO);
+            // merge own and received arrays, sort and decide which half to keep
+            getMyNewArray(myRandomInts, theirRandomInts, sizeOfRandArray, partnerO, myRank);
+        }
+    }
 
 //        MPI_Request_free(&sendReqO);
 //        MPI_Request_free(&sendReqE);
