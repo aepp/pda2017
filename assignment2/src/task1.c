@@ -62,7 +62,7 @@ void task1(int argc, char* argv[], double a, double b, double n, double funcNumb
     // initializing of MPI-Interface
     MPI_Init(&argc, &argv);
 
-    // start time measurement when all initialization is done and communication begins
+    // start communication time measurement when communication begins
     timeCom[0] = MPI_Wtime();
 
     MPI_Status status; //capture status of a MPI_Send
@@ -89,6 +89,8 @@ void task1(int argc, char* argv[], double a, double b, double n, double funcNumb
 
     // wait until everyone received their value
     MPI_Barrier(MPI_COMM_WORLD);
+    // start time measurement of parallel component
+    timePar[0] = MPI_Wtime();
 
     // read received parameters into variables
     a = parameters[0];
@@ -113,6 +115,10 @@ void task1(int argc, char* argv[], double a, double b, double n, double funcNumb
         myResult = trapezoidalRuleF2(myA, myB, n);
     }
 
+    MPI_Barrier(MPI_COMM_WORLD);
+    // end time measurement of parallel component
+    timePar[1] = MPI_Wtime();
+
     // communicate like a beautiful butterfly
     shift = numProc;
     for (i = 0; i < log(numProc)/log(2); i++){
@@ -128,14 +134,17 @@ void task1(int argc, char* argv[], double a, double b, double n, double funcNumb
         // printf("I am process %d and I have received from process %d\n", myRank, myRank^shift);
     }
 
-    // make some barriers and measure the time
-    if (myRank == root){
-        printf("Result: %lf\n", myResult);
-    }
-
     // detach communication buffer
     MPI_Buffer_detach(buffer, &bufferSize);
 
+    timeCom[1] = MPI_Wtime();
+
+    // root process prints the result and elapsed time
+    if (myRank == root){
+        printf("Result: %lf\n", myResult);
+        printf("Communication took %lf seconds\n", timeCom[1] - timeCom[0]);
+        printf("Parallel component took %lf seconds\n", timePar[1] - timePar[0]);
+    }
     // finalizing MPI interface
     MPI_Finalize();
 }
