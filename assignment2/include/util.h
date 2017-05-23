@@ -6,13 +6,21 @@
 
 /**
  * trapezoidal rule for function 1
+ *
+ * a        left integration limit
+ * b        right integration limit
+ * n        amount of sub-intervals
  */
-double trapezoidalRuleF1(double a, double b, double s, int n);
+double trapezoidalRuleF1(double a, double b, int n);
 
 /**
  * trapezoidal rule for function 2
+ *
+ * a        left integration limit
+ * b        right integration limit
+ * n        amount of sub-intervals
  */
-double trapezoidalRuleF2(double a, double b, double s, int n);
+double trapezoidalRuleF2(double a, double b, int n);
 
 /**
  * function to integrate no. 1
@@ -38,5 +46,20 @@ void fillWithRandomInt(int* array, int size, int maxRandom, int rank);
  * generate random integer with the maximum value max
  */
 int generateRandomInt(int max);
+
+/**
+ * comparator function for quick sort
+ */
+int cmpFunc (const void *a, const void *b);
+
+/**
+ * communication in non-blocking mode, task 2a)
+ */
+void nonBlockingCommunication();
+
+/**
+ * persistent communication, task 2b)
+ */
+void persistentCommunication();
 
 #endif

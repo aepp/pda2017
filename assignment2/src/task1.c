@@ -101,16 +101,16 @@ void task1(int argc, char* argv[], double a, double b, double n, double funcNumb
     // determine single sub-interval size
     subIntervalLength = completeInterval / numProc;
     // determine own left integration limit
-    myA = subIntervalLength * myRank;
+    myA = a + subIntervalLength * myRank;
     // determine own right integration limit
-    myB = subIntervalLength * (myRank + 1);
+    myB = a + subIntervalLength * (myRank + 1);
 
     // integrate
     // use f1 or f2 depending on user input
     if(funcNumber == 1) {
-        myResult = trapezoidalRuleF1(myA, myB, subIntervalLength, numProc);
+        myResult = trapezoidalRuleF1(myA, myB, n);
     } else {
-        myResult = trapezoidalRuleF2(myA, myB, subIntervalLength, numProc);
+        myResult = trapezoidalRuleF2(myA, myB, n);
     }
 
     // communicate like a beautiful butterfly
@@ -130,7 +130,7 @@ void task1(int argc, char* argv[], double a, double b, double n, double funcNumb
 
     // make some barriers and measure the time
     if (myRank == root){
-        printf("Result: %f\n", myResult);
+        printf("Result: %lf\n", myResult);
     }
 
     // detach communication buffer
