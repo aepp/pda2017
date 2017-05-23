@@ -5,6 +5,6 @@
 /* Prototypes for the functions */
 
 /* prints help on the screen by using -h cli parameter  */
-void showHelp(int assignmentNumber);
+void showHelp(int assignmentNumber, int argc, char* argv[]);
 
 #endif

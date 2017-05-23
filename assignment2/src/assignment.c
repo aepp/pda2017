@@ -43,8 +43,7 @@ int main(int argc, char* argv[])
     while ((opt = getopt(argc, argv, "hn:t:a:b:f:m:")) != -1) {
         switch(opt) {
             case 'h': // if -h parameter given => show help
-                printf("Show help:\n");
-                showHelp(ASSIGNMENT_NR);
+                showHelp(ASSIGNMENT_NR, argc, argv);
                 exit(0);
             case 'n': 
                 // if -n parameter given => 
@@ -75,7 +74,7 @@ int main(int argc, char* argv[])
 
     // decide which task to run based on -t parameter
     if(taskName == NULL){ // if no parameter provided - just show help
-        showHelp(ASSIGNMENT_NR);
+        showHelp(ASSIGNMENT_NR, argc, argv);
         exit(0);
     } else if(!strcmp(taskName, "1")) {
         if(b != 0){
