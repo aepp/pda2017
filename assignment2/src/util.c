@@ -162,10 +162,10 @@ void persistentCommunication(int* myRandomInts, int myRank, int numProc, int siz
         }
     }
 
-//        MPI_Request_free(&sendReqO);
-//        MPI_Request_free(&sendReqE);
-//        MPI_Request_free(&recvReqO);
-//        MPI_Request_free(&recvReqE);
+    MPI_Request_free(&sendReqO);
+    MPI_Request_free(&sendReqE);
+    MPI_Request_free(&recvReqO);
+    MPI_Request_free(&recvReqE);
 }
 
 void getMyNewArray(int *myRandomInts, int *theirRandomInts, int sizeOfRandArray, int partner, int myRank){
