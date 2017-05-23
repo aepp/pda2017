@@ -3,30 +3,29 @@
 /* Author: Aleksandr Epp <aleksandr.epp@gmail.com>                      */
 /* Matriclenumber: 6002853                                              */
 /* Assignment : 1                                                       */
-/* Parameters: -h, -t, -m                                               */
+/* Parameters: -h, -t, -m, -n, -a ,-b, -f                               */
 /* Environment variables: no                                            */
 /*                                                                      */
 /* Description:                                                         */
 /*                                                                      */
-/* This is the main program of Assignment 1. From here individual tasks */
+/* This is the main program of Assignment 2. From here individual tasks */
 /* can be started. Or view the help.                                    */
 /*                                                                      */
 /************************************************************************/ 
 
-#include <stdio.h>      // import of the definitions of the C IO library
-#include <stdlib.h>     // to use exit() function
-#include <string.h>     // import of the definitions of the string operations
-#include <unistd.h>     // standard unix io library definitions and declarations
-#include <errno.h>      // system error numbers
-#include <inttypes.h>   // for strtoumax() string to int conversion
+#include <stdio.h>          // import of the definitions of the C IO library
+#include <stdlib.h>         // to use exit() function
+#include <string.h>         // import of the definitions of the string operations
+#include <unistd.h>         // standard unix io library definitions and declarations
+#include <errno.h>          // system error numbers
+#include <inttypes.h>       // for strtoumax() string to int conversion
 
-#include "help.h"       // to show help with -h parameter
-#include "task1.h"      // to run Task 1
-#include "task2.h"      // to run Task 2
+#include "help.h"           // to show help with -h parameter
+#include "task1.h"          // to run Task 1
+#include "task2.h"          // to run Task 2
 
 // constants
-#define DEFAULT_NUMBER_OF_INTERVALS 100 // default number of elements in random int array
-#define MAX_RANDOM 100 // maximum random integer that appears in the array
+#define DEFAULT_SIZE 10    // default size of random int array or amount of intervals
 #define ASSIGNMENT_NR 2
 
 int main(int argc, char* argv[])
@@ -34,7 +33,7 @@ int main(int argc, char* argv[])
     int opt = 0; // command line parameter name
 
     double a = 0, b = 0, // integration limits
-           n = DEFAULT_NUMBER_OF_INTERVALS, // default n for both tasks
+           n = DEFAULT_SIZE, // default n for both tasks
            func = 1, // default function to integrate for task 1
            commMode = 1; // default communication mode for task 2
 

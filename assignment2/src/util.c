@@ -57,54 +57,97 @@ int cmpFunc (const void *a, const void *b)
 {
    return (*(int*)a - *(int*)b);
 }
-//
-//void nonBlockingCommunication(int* myRandomInts, int myRank, int numProc, int sizeOfRandArray){
-//    MPI_Request sendReqO,                       // odd send request handle
-//                sendReqE,                       // even send request handle
-//                recvReqO,                       // odd recv request handle
-//                recvReqE;                       // even recv request handle
-//    MPI_Status  statusO,                        // odd communication status
-//                statusE;                        // even communication status
-//    int myNewRandomInts[sizeOfRandArray],          // elements current process keep
-//        randomIntsToSend[sizeOfRandArray],       // elements current process sends to its communication partner
-//        phase,                                  // phase (even or odd)
-//        partnerE,
-//        partnerO;
-//
-//    // calculate communication partner rank for even and odd phase
-//    if(myRank % 2 == 0){
-//        partnerE = myRank + 1;
-//        partnerO = myRank - 1;
-//        if(partnerE >= numProc){
-//            partnerE = -1;
+
+void nonBlockingCommunication(int *myRandomInts, int myRank, int numProc, int sizeOfRandArray){
+    MPI_Request sendReqO,                   // odd send request handle
+                sendReqE,                   // even send request handle
+                recvReqO,                   // odd recv request handle
+                recvReqE;                   // even recv request handle
+    MPI_Status  statusO,                    // odd communication status
+                statusE;                    // even communication status
+    int theirRandomInts[sizeOfRandArray],   // elements current process keep
+        randomIntsToSend[sizeOfRandArray],  // elements current process sends to its communication partner
+        phase,                              // phase (even or odd)
+        partnerE,
+        partnerO,
+        mergedArray[2 * sizeOfRandArray];
+
+    // calculate communication partner rank for even and odd phase
+    if(myRank % 2 == 0){
+        partnerE = myRank + 1;
+        partnerO = myRank - 1;
+        if(partnerE >= numProc){
+            partnerE = -1;
+        }
+    } else {
+        partnerE = myRank - 1;
+        partnerO = myRank + 1;
+        if(partnerO >= numProc){
+            partnerO = -1;
+        }
+    }
+
+    // odd-even transportation sort
+    for (phase = 0; phase < numProc; phase++){
+        if (phase % 2 == 0 && partnerE >= 0){ // even phase
+            MPI_Isend(myRandomInts, sizeOfRandArray, MPI_INT, partnerE, 1, MPI_COMM_WORLD, &sendReqE);
+            MPI_Irecv(theirRandomInts, sizeOfRandArray, MPI_INT, partnerE, 1, MPI_COMM_WORLD, &recvReqE);
+            // wait until receive finished
+            MPI_Wait(&recvReqE, &statusE);
+
+            // merge own random array
+            memcpy(mergedArray, myRandomInts, sizeOfRandArray * sizeof(int));
+            // and partners random array into one
+            memcpy(mergedArray + sizeOfRandArray, theirRandomInts, sizeOfRandArray * sizeof(int));
+            // sort the merged array
+            qsort(mergedArray, 2 * sizeOfRandArray, sizeof(int), cmpFunc);
+
+            // apply the exchange rule
+            if (myRank < partnerE){ // if I'm left from my partner
+                // keep the left part of the merged sorted array (smaller values)
+                memcpy(myRandomInts, mergedArray, sizeOfRandArray * sizeof(int));
+            } else { // if I'm the right neighbour of my partner
+                // keep the right part of the merged sorted array (bigger values)
+                memcpy(myRandomInts, mergedArray + sizeOfRandArray, sizeOfRandArray * sizeof(int));
+            }
+        } else if (phase % 2 != 0 && partnerO >= 0){ // odd phase
+            MPI_Isend(myRandomInts, sizeOfRandArray, MPI_INT, partnerO, 1, MPI_COMM_WORLD, &sendReqO);
+
+            // wait until send finished
+            MPI_Wait(&sendReqO, &statusO);
+
+            MPI_Irecv(theirRandomInts, sizeOfRandArray, MPI_INT, partnerO, 1, MPI_COMM_WORLD, &recvReqO);
+
+            MPI_Wait(&recvReqO, &statusO);
+
+            // merge own random array
+            memcpy(mergedArray, myRandomInts, sizeOfRandArray * sizeof(int));
+            // and partners random array into one
+            memcpy(mergedArray + sizeOfRandArray, theirRandomInts, sizeOfRandArray * sizeof(int));
+            // sort the merged array
+            qsort(mergedArray, 2 * sizeOfRandArray, sizeof(int), cmpFunc);
+
+            // apply the exchange rule
+            if (myRank < partnerO){ // if I'm left from my partner
+                // keep the left part of the merged sorted array (smaller values)
+                memcpy(myRandomInts, mergedArray, sizeOfRandArray * sizeof(int));
+            } else { // if I'm the right neighbour of my partner
+                // keep the right part of the merged sorted array (bigger values)
+                memcpy(myRandomInts, mergedArray + sizeOfRandArray, sizeOfRandArray * sizeof(int));
+            }
+        }
+//        if(myRank == 0){
+//            printf("%d\n", myRank);
 //        }
-//    } else {
-//        partnerE = myRank - 1;
-//        partnerO = myRank + 1;
-//        if(partnerO >= numProc){
-//            partnerO = -1;
-//        }
-//    }
+//        MPI_Request_free(&sendReqO);
+//        MPI_Request_free(&sendReqE);
+//        MPI_Request_free(&recvReqO);
+//        MPI_Request_free(&recvReqE);
 //
-//    // odd-even transportation sort
-//    for (phase = 0; phase < numProc; phase++){
-//        if (phase % 2 == 0 && partnerE > 0){ // even phase
-//            MPI_Isend(myRandomInts, sizeOfRandArray, MPI_INT, partnerE, 1, MPI_COMM_WORLD, &sendReqE);
-//
-//            MPI_Irecv(myNewRandomInts, sizeOfRandArray, MPI_INT, partnerE, 1, MPI_COMM_WORLD, &recvReqE);
-//        } else if (phase % 2 != 0 && partnerO > 0){ // odd phase
-//            MPI_Irecv(theirRandomInts, sizeOfRandArray, MPI_INT, partnerO, 1, MPI_COMM_WORLD, &recvReqO);
-//
-//            MPI_Wait(&recvReqO, &statusO);
-//
-//            sortArrays(randomInts, theirRandomInts, myRandomInts, sizeOfRandArray);
-//
-//            MPI_Isend(rand_ints_send, n, MPI_INT, partner, 1, MPI_COMM_WORLD, &sendReqO);
-//            MPI_Wait(&sendReqO, &statusO);
-//        }
-//    }
-//}
-//
-//void persistentCommunication(int* randomInts, int myRank, int numProc, int sizeOfRandArray){
-//
-//}
+//        free(mergedArray);
+    }
+}
+
+void persistentCommunication(int* randomInts, int myRank, int numProc, int sizeOfRandArray){
+
+}

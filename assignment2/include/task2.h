@@ -9,9 +9,11 @@
  *
  * Parameters:
  *
- * argc         number of cli arguments
- * argv         cli arguments
+ * argc             number of cli arguments
+ * argv             cli arguments
+ * sizeOfRandArray  amount of elements in random array
+ * commMode         communication mode (non-blocking = 1, persistent = 2)
  */
-void task2(int argc, char* argv[]);
+void task2(int argc, char* argv[], double sizeOfRandArray, double commMode);
 
 #endif
