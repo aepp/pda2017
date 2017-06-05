@@ -60,12 +60,6 @@ void task1(int argc, char* argv[], double epsilon, char* matrixAFilePath, char* 
     rowsPerProcessCount = vectorBSize / numProc;
 
     // allocate space for own rows of matrix A
-//    myMatrixARows = (double **) malloc(rowsPerProcessCount * sizeof(double*));
-//    for (i = 0; i < rowsPerProcessCount; i++) {
-//        myMatrixARows[i] = malloc(vectorBSize * sizeof(double));
-//    }
-
-    // allocate space for own rows of matrix A
     myMatrixARows = malloc(sizeof *myMatrixARows * rowsPerProcessCount);
 
     // test allocation
