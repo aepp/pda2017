@@ -26,7 +26,6 @@ void showHelp(int assignmentNumber, double epsilon, int argc, char* argv[])
         printf("# -t [integer]         run task specified by [integer] from Assignment %d #\n", assignmentNumber);
         printf("#                      valid task numbers are 1 and 2                     #\n");
         printf("# -h                   view this help                                     #\n");
-        printf("#                      if not set the default value is 100                #\n");
         printf("# -m [string]          path to matrix file                                #\n");
         printf("#                      if not specified, set to default value             #\n");
         printf("# -v [string]          path to vector file                                #\n");
