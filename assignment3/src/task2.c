@@ -10,12 +10,6 @@
 /* Same Jacobi method as implemented in task 1 but tis time processes   */
 /* read columns and not rows from the input file(s).                    */
 /*                                                                      */
-/* Ich habe die Stellen mit --> markiert, an denen ich vorher dynamisch */
-/* den Speicher allokiert habe. Dies hat für 4 und 8 Prozesse           */
-/* funktioniert, bei 1 und 2 gab's dann Fehlermeldungen. Ich weiß, dass */
-/* man den auf diese Weise allokierten Speiche auch mit free()          */
-/* freigeben muss, jedoch hat free() ebenfalls eine Fehlermeldung       */
-/* ausgespuckt, dass der übergeben Zeiger ungültig sei.                 */
 /************************************************************************/
 
 #include "mpi.h"                                // import of the MPI definitions
