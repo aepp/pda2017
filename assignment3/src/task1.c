@@ -39,9 +39,9 @@ void task1(int argc, char* argv[], double epsilon, char* matrixAFilePath, char* 
     double vectorB[vectorBSize],                // vector b
            matrixA[vectorBSize][vectorBSize],   // matrix A
            vectorX[vectorBSize],                // current vector x
-           vectorXPrev[vectorBSize],            // previous vector x to calculate the convergence
-           (*myMatrixARows)[vectorBSize],                     // rows of matrix A for own calculation
-           *myVectorXValues;                    // own calculated vector x values
+           vectorXPrev[vectorBSize];            // previous vector x to calculate the convergence
+// -->   double (*myMatrixARows)[vectorBSize],       // rows of matrix A for own calculation
+// -->          *myVectorXValues;                    // own calculated vector x values
 
     MPI_File fh;                                // file handle for mpi file operations
 
@@ -60,8 +60,10 @@ void task1(int argc, char* argv[], double epsilon, char* matrixAFilePath, char* 
     rowsPerProcessCount = vectorBSize / numProc;
 
     // allocate space for own rows of matrix A
-    myMatrixARows = malloc(sizeof *myMatrixARows * rowsPerProcessCount);
+// -->    myMatrixARows = malloc(sizeof *myMatrixARows * rowsPerProcessCount);
 
+    double myMatrixARows[rowsPerProcessCount][vectorBSize],       // rows of matrix A for own calculation
+           myVectorXValues[rowsPerProcessCount];                    // own calculated vector x values
     // test allocation
 //    int j;
 //    for (i = 0; i < rowsPerProcessCount; i++) {
@@ -72,7 +74,7 @@ void task1(int argc, char* argv[], double epsilon, char* matrixAFilePath, char* 
 //    }
 
     // allocate space for own calculated vector x values
-    myVectorXValues = malloc(rowsPerProcessCount);
+// -->    myVectorXValues = malloc(rowsPerProcessCount);
 
     // if I'm root
     if (myRank == root){
