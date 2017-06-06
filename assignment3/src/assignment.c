@@ -24,11 +24,13 @@
 #include "task1.h"                      // to run Task 1
 #include "task2.h"                      // to run Task 2
 
-#include <linux/limits.h>   // for max path name length
+#include <linux/limits.h>               // for PATH_MAX
 
 // constants & default values
 #define ASSIGNMENT_NR   3
-#define EPSILON         0.0000001       // default epsilon value for Jacobi method
+#define EPSILON         0.000001       // default epsilon value for Jacobi method
+#define MATRIX          ((unsigned char *)"./examples/Matrix_A_8x8")    // default matrix A path
+#define VECTOR_B        ((unsigned char *)"./examples/Vector_b_8x")     // default vector b path
 #define VECTOR_B_SIZE   8               // default vector b size
 
 int main(int argc, char* argv[])
@@ -37,15 +39,15 @@ int main(int argc, char* argv[])
         vectorBSize = VECTOR_B_SIZE;    // size of vector b
     double epsilon = EPSILON;           // epsilon value for Jacobi method
 
-    char *taskName = NULL,                                  // task nr. given by cli parameter
-         matrixAFilePath[PATH_MAX],      // default path to the file containing matrix A
-         vectorBFilePath[PATH_MAX];     // default path to the file containing vector b
+    char *taskName = NULL,              // task nr. given by cli parameter
+         *matrixAFilePath = MATRIX,     // path to the file containing matrix A
+         *vectorBFilePath = VECTOR_B;   // path to the file containing vector b
 
-    memset(matrixAFilePath, 0, PATH_MAX);
-    memset(vectorBFilePath, 0, PATH_MAX);
-
-    strcpy(matrixAFilePath, "./examples/Matrix_A_8x8");
-    strcpy(vectorBFilePath, "./examples/Vector_b_8x");
+//    memset(matrixAFilePath, 0, PATH_MAX);
+//    memset(vectorBFilePath, 0, PATH_MAX);
+//
+//    strcpy(matrixAFilePath, "./examples/Matrix_A_8x8");
+//    strcpy(vectorBFilePath, "./examples/Vector_b_8x");
 
     // iterate through all cli parameters
     while ((opt = getopt(argc, argv, "t:e:m:v:s:h")) != -1) {
@@ -57,12 +59,12 @@ int main(int argc, char* argv[])
                 taskName = optarg;
                 break;
             case 'm': // if -m parameter given => set path to matrix file
-//                matrixAFilePath = optarg;
-                strcpy(matrixAFilePath, optarg);
+                matrixAFilePath = optarg;
+//                strcpy(matrixAFilePath, optarg);
                 break;
             case 'v': // if -v parameter given => set path to vector b file
-//                vectorBFilePath = optarg;
-                strcpy(vectorBFilePath, optarg);
+                vectorBFilePath = optarg;
+//                strcpy(vectorBFilePath, optarg);
                 break;
             case 's': // if -s parameter given => set the size of vector b
                 vectorBSize = strtoumax(optarg, NULL, 10);
