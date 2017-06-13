@@ -23,4 +23,27 @@ void fillWithRandomInt(int* array, int size, int maxRandom, int rank);
  */
 int generateRandomInt(int max);
 
+/**
+ * compare function for ascending sort
+ */
+int cmpFuncASC (const void *a, const void *b);
+
+/**
+ * compare function for descending sort
+ */
+int cmpFuncDESC (const void *a, const void *b);
+
+/**
+ * odd-even sort from task 2
+ *
+ * additional parameter sortOrder for even/odd rows;
+ * get rank and comm size from communicator
+ */
+void oddEvenTranspositionSort(int *myRandomInts, MPI_Comm comm, int sizeOfRandArray, int sortOrder);
+
+/**
+ * used internally by odd-even sort from task 2
+ */
+void getMyNewArray(int *myRandomInts, int *theirRandomInts, int sizeOfRandArray, int partner, int myRank, int sortOrder);
+
 #endif
