@@ -2,7 +2,7 @@
 /* Program: assignment.c                                                */
 /* Author: Aleksandr Epp <aleksandr.epp@gmail.com>                      */
 /* Matriclenumber: 6002853                                              */
-/* Assignment : 3                                                       */
+/* Assignment : 4                                                       */
 /* Parameters: -m, -h                       see help (-h) for details   */
 /* Environment variables: no                                            */
 /*                                                                      */
