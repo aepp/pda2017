@@ -17,11 +17,11 @@ ODIR=obj
 dir_guard=@mkdir -p $(@D)
 
 # generate paths of included files
-_DEPS = help.h util.h task1.h
+_DEPS = help.h util.h task1.h task2.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 # generate paths of object files
-_OBJ = help.o util.o task1.o $(MAIN_PROGRAM).o
+_OBJ = help.o util.o task1.o task2.o $(MAIN_PROGRAM).o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 # compile dependencies
