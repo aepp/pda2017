@@ -11,7 +11,10 @@
  *
  * argc                     number of cli arguments
  * argv                     cli arguments
+ * inputImgFilePath         path to input image file
+ * filterType               filter type to apply (see help for details)
+ * filterStrength           how often to apply desired filter
  */
-void task1(int argc, char* argv[]);
+void task1(int argc, char* argv[], char* inputImgFilePath, int filterType, int filterStrength);
 
 #endif

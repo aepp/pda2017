@@ -5,22 +5,40 @@
 /* Prototypes for the functions */
 
 /**
- * fill array with random double values
+ * apply selected filter
  *
- * array        array to fill
- * size         size of the array
- * maxRandom    maximum random value
- * rank         own process rank to make values real randoms
+ * input        part of input image
+ * output       part of filtered output result
+ * filterType   filter selector
  */
-void fillWithRandomInt(int* array, int size, int maxRandom, int rank);
+void applyFilter(unsigned char input[][1280 + 4], unsigned char output[][1280], int filterType, int rowsPerProcessCount);
 
 /**
- * generate random int value
+ * calculate filtered values
  *
- * maxRandom    maximum random value
- *
- * return       random int value which is at most [max]
+ * input        part of input image
+ * output       part of filtered output result
+ * filter       selected filter (matrix)
  */
-int generateRandomInt(int max);
+void getFilterResult(unsigned char input[][1280 + 4], unsigned char output[][1280], double filter[][5], int rowsPerProcessCount);
+
+/**
+ * calculate filter result for a single pixel
+ *
+ * input        part of input image
+ * filter       selected filter (matrix)
+ * y            y position of current pixel
+ * x            x position of current pixel
+ */
+unsigned char getSinglePixelFilterResult(unsigned char input[][1280 + 4], double filter[][5], int y, int x);
+
+/**
+ * add left and right padding of 2 pixels to an image part
+ *
+ * input                        part of input image (padded at top and bottom)
+ * paddedInput                  part of input image after left and right padding added
+ * rowsPerProcessCountPadded    rows count in the completely padded image
+ */
+void addLeftRightPadding(unsigned char input[][1280], unsigned char paddedInput[][1280 + 4], int rowsPerProcessCountPadded);
 
 #endif
