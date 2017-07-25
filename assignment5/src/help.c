@@ -27,7 +27,9 @@ void showHelp(int assignmentNumber, int argc, char* argv[])
         printf("# -h                   view this help                                                   #\n");
         printf("# -t [integer]         task number to execute                                           #\n");
         printf("#                      valid task numbers are 1 and 2                                   #\n");
+        printf("#                                                                                       #\n");
         printf("# Available parameters for task 1                                                       #\n");
+        printf("#                                                                                       #\n");
         printf("# -i [string]          input image to which filter will be applied                      #\n");
         printf("#                      if not specified, default value is ./examples/ffm_1280x960.gray  #\n");
         printf("# -f [integer]         filter type; valid filter types are:                             #\n");
