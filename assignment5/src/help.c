@@ -30,8 +30,8 @@ void showHelp(int assignmentNumber, int argc, char* argv[])
         printf("# Available parameters for task 1                                                       #\n");
         printf("# -i [string]          input image to which filter will be applied                      #\n");
         printf("#                      if not specified, default value is ./examples/ffm_1280x960.gray  #\n");
-        printf("# -f [integer]         filter type; valid filter types are                              #\n");
-        printf("#                      1 = blur, 2 = sharpen, 3 = relief, 4 = edge                      #\n");
+        printf("# -f [integer]         filter type; valid filter types are:                             #\n");
+        printf("#                      1 = blur (default), 2 = sharpen, 3 = relief, 4 = edge            #\n");
         printf("# -m [integer]         filter strength = how often to apply filter                      #\n");
         printf("#                      if not specified, default value is 1                             #\n");
         printf("#                                                                                       #\n");
