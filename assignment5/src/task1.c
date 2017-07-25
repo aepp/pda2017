@@ -77,41 +77,47 @@ void task1(int argc, char* argv[], char* inputImgFilePath, int filterType, int f
     // iterator for filter strength
     int m;
     for(m = 0; m < filterStrength; m++){
-        if(myRank != 0 && myRank != numProc - 1){
-            // send my last row to the next process
-            MPI_Send(myImgRows[rowsPerProcessCount - 2], 2 * 1280, MPI_UNSIGNED_CHAR, myRank + 1, TAG1, MPI_COMM_WORLD);
-            // send my first row to the previous process
-            MPI_Send(myImgRows[0], 2 * 1280, MPI_UNSIGNED_CHAR, myRank - 1, TAG1, MPI_COMM_WORLD);
-            // receive one row from process before
-            MPI_Recv(lastRowFormPrevProc, 2 * 1280, MPI_UNSIGNED_CHAR, myRank - 1, TAG1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            // receive one row from process after
-            MPI_Recv(firstRowFormNextProc, 2 * 1280, MPI_UNSIGNED_CHAR, myRank + 1, TAG1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        if(numProc > 1){
+            if(myRank != 0 && myRank != numProc - 1){
+                // send my last row to the next process
+                MPI_Send(myImgRows[rowsPerProcessCount - 2], 2 * 1280, MPI_UNSIGNED_CHAR, myRank + 1, TAG1, MPI_COMM_WORLD);
+                // send my first row to the previous process
+                MPI_Send(myImgRows[0], 2 * 1280, MPI_UNSIGNED_CHAR, myRank - 1, TAG1, MPI_COMM_WORLD);
+                // receive one row from process before
+                MPI_Recv(lastRowFormPrevProc, 2 * 1280, MPI_UNSIGNED_CHAR, myRank - 1, TAG1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                // receive one row from process after
+                MPI_Recv(firstRowFormNextProc, 2 * 1280, MPI_UNSIGNED_CHAR, myRank + 1, TAG1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-            // prepend received rows to my padded rows
-            memcpy(myTBPaddedImgRows, lastRowFormPrevProc, 2 * 1280 * sizeof(unsigned char));
+                // prepend received rows to my padded rows
+                memcpy(myTBPaddedImgRows, lastRowFormPrevProc, 2 * 1280 * sizeof(unsigned char));
 
-            // append received rows to my padded rows
-            memcpy((unsigned char*)((uintptr_t)myTBPaddedImgRows + (2 + rowsPerProcessCount) * 1280), firstRowFormNextProc, 2 * 1280 * sizeof(unsigned char));
-        } else if(myRank == 0){
-            // send my last row to the next process
-            MPI_Send(myImgRows[rowsPerProcessCount - 2], 2 * 1280, MPI_UNSIGNED_CHAR, myRank + 1, TAG1, MPI_COMM_WORLD);
-            // receive one row from process after
-            MPI_Recv(firstRowFormNextProc, 2 * 1280, MPI_UNSIGNED_CHAR, myRank + 1, TAG1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                // append received rows to my padded rows
+                memcpy((unsigned char*)((uintptr_t)myTBPaddedImgRows + (2 + rowsPerProcessCount) * 1280), firstRowFormNextProc, 2 * 1280 * sizeof(unsigned char));
+            } else if(myRank == 0){
+                // send my last row to the next process
+                MPI_Send(myImgRows[rowsPerProcessCount - 2], 2 * 1280, MPI_UNSIGNED_CHAR, myRank + 1, TAG1, MPI_COMM_WORLD);
+                // receive one row from process after
+                MPI_Recv(firstRowFormNextProc, 2 * 1280, MPI_UNSIGNED_CHAR, myRank + 1, TAG1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                // prepend empty (black) rows to my padded rows
+                memcpy(myTBPaddedImgRows, calloc(2 * 1280, sizeof(unsigned char)), 2 * 1280 * sizeof(unsigned char));
+                // append received rows to my padded rows
+                memcpy((unsigned char*)((uintptr_t)myTBPaddedImgRows + (2 + rowsPerProcessCount) * 1280), firstRowFormNextProc, 2 * 1280 * sizeof(unsigned char));
+            } else if(myRank == numProc - 1){
+                // send my first row to the previous process
+                MPI_Send(myImgRows[0], 2 * 1280, MPI_UNSIGNED_CHAR, myRank - 1, TAG1, MPI_COMM_WORLD);
+                // receive one row from process before
+                MPI_Recv(lastRowFormPrevProc, 2 * 1280, MPI_UNSIGNED_CHAR, myRank - 1, TAG1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                // prepend received rows to my padded rows
+                memcpy(myTBPaddedImgRows, lastRowFormPrevProc, 2 * 1280 * sizeof(unsigned char));
+                // append  empty (black) rows to my padded rows
+                memcpy((unsigned char*)((uintptr_t)myTBPaddedImgRows + (2 + rowsPerProcessCount) * 1280), calloc(2 * 1280, sizeof(unsigned char)), 2 * 1280 * sizeof(unsigned char));
+            }
+        } else {
             // prepend empty (black) rows to my padded rows
             memcpy(myTBPaddedImgRows, calloc(2 * 1280, sizeof(unsigned char)), 2 * 1280 * sizeof(unsigned char));
-            // append received rows to my padded rows
-            memcpy((unsigned char*)((uintptr_t)myTBPaddedImgRows + (2 + rowsPerProcessCount) * 1280), firstRowFormNextProc, 2 * 1280 * sizeof(unsigned char));
-        } else if(myRank == numProc - 1){
-            // send my first row to the previous process
-            MPI_Send(myImgRows[0], 2 * 1280, MPI_UNSIGNED_CHAR, myRank - 1, TAG1, MPI_COMM_WORLD);
-            // receive one row from process before
-            MPI_Recv(lastRowFormPrevProc, 2 * 1280, MPI_UNSIGNED_CHAR, myRank - 1, TAG1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            // prepend received rows to my padded rows
-            memcpy(myTBPaddedImgRows, lastRowFormPrevProc, 2 * 1280 * sizeof(unsigned char));
             // append  empty (black) rows to my padded rows
             memcpy((unsigned char*)((uintptr_t)myTBPaddedImgRows + (2 + rowsPerProcessCount) * 1280), calloc(2 * 1280, sizeof(unsigned char)), 2 * 1280 * sizeof(unsigned char));
         }
-
         // copy own image part (rows) to padded rows array,
         // where 2 rows from previous process are prepended
         // and 2 rows from next process are appended
