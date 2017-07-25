@@ -29,10 +29,15 @@ $(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
 	$(dir_guard)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
+# generate path of worker file
+_WORKER = worker.o
+WORKER = $(patsubst %,$(ODIR)/%,$(_WORKER))
+
 # compile main files with dependencies
 $(MAIN_PROGRAM): $(OBJ)
 	$(dir_guard)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -o $(ODIR)/worker.o $(SDIR)/worker.c
 
 .PHONY: clean
 

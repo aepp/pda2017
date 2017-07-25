@@ -41,4 +41,42 @@ unsigned char getSinglePixelFilterResult(unsigned char input[][1280 + 4], double
  */
 void addLeftRightPadding(unsigned char input[][1280], unsigned char paddedInput[][1280 + 4], int rowsPerProcessCountPadded);
 
+// Task 2
+
+void startMultiplications(
+    MPI_Comm intercomms[],
+    MPI_Request openRequests[],
+    MPI_Datatype blocktypes[],
+    int workerCounts[],
+    int activeMultCount,
+    int matricesDimensions[]
+);
+
+void checkForRunningMultiplications(
+    MPI_Comm intercomms[],
+    MPI_Request openRequests[],
+    MPI_Datatype blockTypes[],
+    int *activeMultCount,
+    int matricesDimensions[],
+    int workerCounts[]
+);
+
+void waitForRunningMultiplications(
+    MPI_Comm intercomms[],
+    MPI_Request openRequests[],
+    MPI_Datatype blockTypes[],
+    int *activeMultCount,
+    int matricesDimensions[],
+    int workerCounts[]
+);
+
+void gatherResults(
+    MPI_Comm intercomm,
+    MPI_Request openRequest,
+    MPI_Datatype blockType,
+    int *activeMultCount,
+    int matricesDimension,
+    int workerCount,
+    int currentMult
+);
 #endif
