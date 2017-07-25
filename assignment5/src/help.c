@@ -21,17 +21,24 @@ void showHelp(int assignmentNumber, int argc, char* argv[])
         printf("#  -> mpiexec -np 4 ./assignment [arguments]                                            #\n");
         printf("#                                                                                       #\n");
         printf("#########################################################################################\n");
+        printf("#                                                                                       #\n");
         printf("# Arguments:                                                                            #\n");
         printf("#                                                                                       #\n");
         printf("# -h                   view this help                                                   #\n");
         printf("# -t [integer]         task number to execute                                           #\n");
         printf("#                      valid task numbers are 1 and 2                                   #\n");
+        printf("# Available parameters for task 1                                                       #\n");
         printf("# -i [string]          input image to which filter will be applied                      #\n");
         printf("#                      if not specified, default value is ./examples/ffm_1280x960.gray  #\n");
         printf("# -f [integer]         filter type; valid filter types are                              #\n");
         printf("#                      1 = blur, 2 = sharpen, 3 = relief, 4 = edge                      #\n");
         printf("# -m [integer]         filter strength = how often to apply filter                      #\n");
         printf("#                      if not specified, default value is 1                             #\n");
+        printf("#                                                                                       #\n");
+        printf("# Available parameters for task 2                                                       #\n");
+        printf("#                                                                                       #\n");
+        printf("# None. Task 2 is interactive.                                                          #\n");
+        printf("#                                                                                       #\n");
         printf("#########################################################################################\n");
     }
     // finalizing MPI interface
