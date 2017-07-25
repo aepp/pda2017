@@ -300,8 +300,6 @@ void startMultiplications(
 
     // start listen for finishedMultiplications calculations
     MPI_Irecv(&finishedMultiplications, 1, MPI_INT, 0, 0, intercomms[activeMultCount - 1], &openRequests[activeMultCount - 1]);
-
-//    free(matrixA);
 }
 
 void checkForRunningMultiplications(
@@ -405,7 +403,7 @@ void gatherResults(
 
     char outputFileName[100];
 
-    MPI_File fh;                    // file handle to open/save files
+    MPI_File fh; // file handle to open/save files
 
     for(i = 0; i < workerCount; i++){
         sendCounts[i] = 1;
